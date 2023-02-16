@@ -10,7 +10,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'dart:ffi' as ffi;
 
 abstract class RustEdgeDetection {
-  Future<void> scan({required String filePath, dynamic hint});
+  Future<List<String>> scan({required String filePath, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kScanConstMeta;
 }
@@ -24,11 +24,11 @@ class RustEdgeDetectionImpl implements RustEdgeDetection {
   factory RustEdgeDetectionImpl.wasm(FutureOr<WasmModule> module) =>
       RustEdgeDetectionImpl(module as ExternalLibrary);
   RustEdgeDetectionImpl.raw(this._platform);
-  Future<void> scan({required String filePath, dynamic hint}) {
+  Future<List<String>> scan({required String filePath, dynamic hint}) {
     var arg0 = _platform.api2wire_String(filePath);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) => _platform.inner.wire_scan(port_, arg0),
-      parseSuccessData: _wire2api_unit,
+      parseSuccessData: _wire2api_StringList,
       constMeta: kScanConstMeta,
       argValues: [filePath],
       hint: hint,
@@ -46,8 +46,20 @@ class RustEdgeDetectionImpl implements RustEdgeDetection {
   }
 // Section: wire2api
 
-  void _wire2api_unit(dynamic raw) {
-    return;
+  String _wire2api_String(dynamic raw) {
+    return raw as String;
+  }
+
+  List<String> _wire2api_StringList(dynamic raw) {
+    return (raw as List<dynamic>).cast<String>();
+  }
+
+  int _wire2api_u8(dynamic raw) {
+    return raw as int;
+  }
+
+  Uint8List _wire2api_uint_8_list(dynamic raw) {
+    return raw as Uint8List;
   }
 }
 
