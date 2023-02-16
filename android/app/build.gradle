@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 33
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -66,3 +66,22 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
+// [
+//     new Tuple2('Debug', ''),
+//     new Tuple2('Profile', '--release'),
+//     new Tuple2('Release', '--release')
+// ].each {
+//     def taskPostfix = it.first
+//     def profileMode = it.second
+//     tasks.whenTaskAdded { task ->
+//         if (task.name == "javaPreCompile$taskPostfix") {
+//             task.dependsOn "cargoBuild$taskPostfix"
+//         }
+//     }
+//     tasks.register("cargoBuild$taskPostfix", Exec) {
+//         // Until https://github.com/bbqsrc/cargo-ndk/pull/13 is merged,
+//         // this workaround is necessary.
+//         commandLine 'sh', '-c', """"""
+//     }
+// }

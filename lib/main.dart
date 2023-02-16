@@ -1,5 +1,9 @@
+import 'dart:ffi';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'api.dart';
+import 'native.dart';
 
 void main() {
   runApp(const Main());
@@ -34,8 +38,37 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  PlatformFile? file;
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(file?.name ?? 'No file'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              if (file == null) return;
+
+              print(await api.scan(filePath: file!.path!));
+            },
+            icon: Icon(Icons.search),
+          ),
+        ],
+      ),
+      body: Container(
+        child: ElevatedButton(
+          child: Text("Select file"),
+          onPressed: () async {
+            PlatformFile? file =
+                (await FilePicker.platform.pickFiles(allowMultiple: false))
+                    ?.files
+                    .first;
+            setState(() {
+              this.file = file;
+            });
+          },
+        ),
+      ),
+    );
   }
 }
